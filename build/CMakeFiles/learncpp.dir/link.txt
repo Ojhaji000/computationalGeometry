@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/learncpp.dir/main.cpp.o CMakeFiles/learncpp.dir/Vec3.cpp.o -o learncpp 
