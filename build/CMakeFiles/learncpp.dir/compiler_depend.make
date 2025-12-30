@@ -6,6 +6,7 @@ CMakeFiles/learncpp.dir/Vec3.cpp.o: /mnt/d/work_area/repos/cppProject/Vec3.cpp \
   /usr/include/stdc-predef.h
 
 CMakeFiles/learncpp.dir/main.cpp.o: /mnt/d/work_area/repos/cppProject/main.cpp \
+  /mnt/d/work_area/repos/cppProject/Vec3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
