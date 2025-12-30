@@ -1,3 +1,0 @@
-/mnt/d/work_area/repos/cppProject/build/CMakeFiles/learncpp.dir
-/mnt/d/work_area/repos/cppProject/build/CMakeFiles/edit_cache.dir
-/mnt/d/work_area/repos/cppProject/build/CMakeFiles/rebuild_cache.dir
