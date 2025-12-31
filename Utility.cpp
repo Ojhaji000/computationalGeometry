@@ -1,0 +1,101 @@
+#include "Utility.h"
+
+Vec3 Utility::LinePlaneIntersection(const Line &line, const Plane &plane)
+// Vec3 lineIntersectPlane(const Line &line, const Plane &plane)
+{
+    // below is vector  form of line equation
+    // equation of line r = r' + t.dir, where 
+    // r is arbitary pint on line
+    // r' is origin of line, a.k.a., point on a line
+    // t is scalar
+    // dir is direction vector
+    // 
+    // equation plane
+    // n.(p-p') = 0
+    // n is plane's normal vector
+    // p is arbitarty point on plane
+    // p' is known point on plane, a.k.a., fixed point
+    //
+    // after solving the both the equations, for "t"
+    // t =  -{n.(r'-p')}  /  {n.dir}
+    // float tolerance = 1e-9;
+    // float denominator = normalOfPlane.dot(lineDirection);
+    Vec3 intersectionPoint(0,0,0);
+    float t=0;
+    Vec3 planeNormal(plane.normal.x, plane.normal.y, plane.normal.z);
+    Vec3 lineDir(line.direction.x, line.direction.y, line.direction.z);
+    Vec3 lineOrigin(line.origin.x, line.origin.y, line.origin.z);
+    Vec3 planePoint(plane.point.x, plane.point.y, plane.point.z);
+    const float temp = planeNormal.dot(lineDir);
+    if (temp > 0.001){
+        const Vec3 temp1 = planePoint - lineOrigin;
+        t = planeNormal.dot(temp1);
+        t = t / temp;
+        intersectionPoint = lineOrigin +(lineDir*t);
+    }
+    else{
+        std::cout << "Either both are parallel or collinear" << std::endl;
+    }
+    return intersectionPoint;
+}
+
+Plane Utility::PlaneOfTriangle(const std::vector<Vec3*> &trianglePoints){
+    // three pooints:p,q,r
+    // vector pq, vector pr;
+    Vec3 PQ = *trianglePoints[0] - *trianglePoints[1];
+    Vec3 PR = *trianglePoints[0] - *trianglePoints[2];
+    
+    // cross prduct of above two vectors = normal of the plane;
+    Vec3 normal = PQ.cross(PR);
+
+    // return point on plane and normal of plane;
+    return {*trianglePoints[0], normal};
+}
+
+bool Utility::PointInTriangleOrNot(const std::vector<Vec3*> &trianglePoints, const Vec3 &point){
+    float originalArea = CalculateTriangleArea(trianglePoints);
+    // area method
+    
+    for (int i = 0; i < trianglePoints.size();i++){
+        int i1 = i, i2 = i + 1;
+        i2 = (abs((double)i2 - trianglePoints.size()) > 0.01) ? 0 : i + 1;
+        std::vector <Vec3*> triangleWithAnotherPoint = {
+            new Vec3(point),
+            new Vec3(*trianglePoints[i]),
+            new Vec3(*trianglePoints[i+1])
+        };
+        float tempArea = CalculateTriangleArea(triangleWithAnotherPoint);
+        if (abs(tempArea-originalArea)>0.001)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+float Utility::CalculateTriangleArea(const std::vector<Vec3*> &trianglePoints){
+    float s = 0;
+    std::vector<float> tempVector;
+    for (int i = 0; i < trianglePoints.size(); i++)
+    {
+        float tempDistance = 0;
+        if (abs((double)(i+1)-trianglePoints.size()))
+        {
+            tempDistance = DistanceBetweenTwoPoints(*trianglePoints[i], *trianglePoints[0]);
+        }
+        else
+        {
+            tempDistance = DistanceBetweenTwoPoints(*trianglePoints[i], *trianglePoints[i + 1]);
+        }
+                    tempVector.push_back(tempDistance);
+
+        s += tempDistance;
+    }
+    s /= 2;
+    float area = sqrt(s * (s - tempVector[0]) * (s - tempVector[1]) * (s - tempVector[2]));
+    return area;
+}
+
+float Utility::DistanceBetweenTwoPoints(const Vec3 &a,const Vec3 &b){
+    return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2) + pow((b.z - a.z), 2));
+}
