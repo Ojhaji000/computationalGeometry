@@ -5,3 +5,9 @@ add_executable(learncpp main.cpp
 #Point.cpp
 Vec3.cpp
 )
+
+# target_precompile_headers(learncpp PUBLIC
+# <vector>
+# <iostream>
+# "Vec3.h"
+# )
