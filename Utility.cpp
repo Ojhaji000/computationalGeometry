@@ -74,25 +74,21 @@ bool Utility::PointInTriangleOrNot(const std::vector<Vec3*> &trianglePoints, con
 }
 
 float Utility::CalculateTriangleArea(const std::vector<Vec3*> &trianglePoints){
-    float s = 0;
+    float semiPerimeter = 0;
     std::vector<float> tempVector;
     for (int i = 0; i < trianglePoints.size(); i++)
     {
-        float tempDistance = 0;
-        if (abs((double)(i+1)-trianglePoints.size()))
-        {
-            tempDistance = DistanceBetweenTwoPoints(*trianglePoints[i], *trianglePoints[0]);
-        }
-        else
-        {
-            tempDistance = DistanceBetweenTwoPoints(*trianglePoints[i], *trianglePoints[i + 1]);
-        }
-                    tempVector.push_back(tempDistance);
+        float distanceBetweenConsecutivePoints = 0;
+        
+        double difference = (i + 1) - trianglePoints.size();
+        int i1 = i, i2 = difference < 0.001 ? 0 : i + 1;
 
-        s += tempDistance;
+        distanceBetweenConsecutivePoints = DistanceBetweenTwoPoints(*trianglePoints[i1], *trianglePoints[i2]);
+        tempVector.push_back(distanceBetweenConsecutivePoints);
+        semiPerimeter += distanceBetweenConsecutivePoints;
     }
-    s /= 2;
-    float area = sqrt(s * (s - tempVector[0]) * (s - tempVector[1]) * (s - tempVector[2]));
+    semiPerimeter /= 2;
+    float area = sqrt(semiPerimeter * (semiPerimeter - tempVector[0]) * (semiPerimeter - tempVector[1]) * (semiPerimeter - tempVector[2]));
     return area;
 }
 
