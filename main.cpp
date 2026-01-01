@@ -22,6 +22,6 @@ int main(int, char **){
         <<intersectionPoint.z<<")" << 
     std::endl;
 
-    std:: cout<< "and the line crosses the triangle or not:"<<
-    Utility::PointInTriangleOrNot(trianglePoints, intersectionPoint)<<std::endl;
+    bool result = Utility::PointInTriangleOrNot(trianglePoints, intersectionPoint);
+    std::cout << "and the line crosses the triangle or not:" << result << std::endl;
 };

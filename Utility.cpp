@@ -58,14 +58,14 @@ bool Utility::PointInTriangleOrNot(const std::vector<Vec3*> &trianglePoints, con
     
     for (int i = 0; i < trianglePoints.size();i++){
         int i1 = i, i2 = i + 1;
-        i2 = (abs((double)i2 - trianglePoints.size()) > 0.01) ? 0 : i + 1;
+        i2 = (AreEqual(i2,trianglePoints.size())) ? 0 : i2;
         std::vector <Vec3*> triangleWithAnotherPoint = {
             new Vec3(point),
-            new Vec3(*trianglePoints[i]),
-            new Vec3(*trianglePoints[i+1])
+            new Vec3(*trianglePoints[i1]),
+            new Vec3(*trianglePoints[i2])
         };
         float tempArea = CalculateTriangleArea(triangleWithAnotherPoint);
-        if (abs(tempArea-originalArea)>0.001)
+        if ((tempArea-originalArea)>0.001)
         {
             return false;
         }
@@ -80,9 +80,8 @@ float Utility::CalculateTriangleArea(const std::vector<Vec3*> &trianglePoints){
     {
         float distanceBetweenConsecutivePoints = 0;
         
-        double difference = (i + 1) - trianglePoints.size();
-        int i1 = i, i2 = difference < 0.001 ? 0 : i + 1;
-
+        int i1 = i, i2 = i + 1;
+        i2 = AreEqual(i2, trianglePoints.size()) ? 0 : i2;
         distanceBetweenConsecutivePoints = DistanceBetweenTwoPoints(*trianglePoints[i1], *trianglePoints[i2]);
         tempVector.push_back(distanceBetweenConsecutivePoints);
         semiPerimeter += distanceBetweenConsecutivePoints;
@@ -94,4 +93,8 @@ float Utility::CalculateTriangleArea(const std::vector<Vec3*> &trianglePoints){
 
 float Utility::DistanceBetweenTwoPoints(const Vec3 &a,const Vec3 &b){
     return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2) + pow((b.z - a.z), 2));
+}
+
+bool Utility::AreEqual(float a, float b){
+    return std::abs(a - b) < Epsilon;
 }
