@@ -99,7 +99,7 @@ bool Utility::AreEqual(float a, float b){
     return std::abs(a - b) < Epsilon;
 }
 
-void Utility::TextGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint){
+void Utility::TextFileGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint){
     const std::string filePath = "../data/output.txt"; 
     std::ofstream outputFile(filePath);
     if (!outputFile.is_open()) {

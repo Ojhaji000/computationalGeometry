@@ -25,5 +25,5 @@ int main(int, char **){
     bool result = Utility::PointInTriangleOrNot(trianglePoints, intersectionPoint);
     std::cout << "and the line crosses the triangle or not:" << result << std::endl;
 
-    Utility::TextGenerator(line, trianglePoints, intersectionPoint);
+    Utility::TextFileGenerator(line, trianglePoints, intersectionPoint);
 };

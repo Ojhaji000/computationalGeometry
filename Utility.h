@@ -18,5 +18,5 @@ class Utility{
         static Vec3 LinePlaneIntersection(const Line &line, const Plane &plane);
         static Plane PlaneOfTriangle(const std::vector<Vec3*> &trianglePoints);
         static bool PointInTriangleOrNot(const std::vector<Vec3 *> &trianglePoints, const Vec3 &point);
-        static void TextGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint);
+        static void TextFileGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint);
 };
