@@ -98,3 +98,40 @@ float Utility::DistanceBetweenTwoPoints(const Vec3 &a,const Vec3 &b){
 bool Utility::AreEqual(float a, float b){
     return std::abs(a - b) < Epsilon;
 }
+
+void Utility::TextGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint){
+    const std::string filePath = "../data/output.txt"; 
+    std::ofstream outputFile(filePath);
+    if (!outputFile.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return; // Return an error code
+    }
+
+    // line
+    outputFile << "\\ \\left("
+    <<line.origin.x<<","<< line.origin.y<<","<<line.origin.z
+    <<"\\right)+t\\left("<<
+    line.direction.x<<","<<line.direction.y<<","<<line.direction.z
+    <<"\\right)"<<std::endl;
+
+    // plane
+    // outputFile << "4\\left(x-2\\right)+2\\left(y-5\\right)+8\\left(z-8\\right)=0" << std::endl;
+
+    // triangle
+    outputFile << "\\operatorname{triangle}\\left(\\left("
+    <<trianglePoints[0]->x<<","<<trianglePoints[0]->y<<","<<trianglePoints[0]->z
+    <<"\\right),\\left("
+    <<trianglePoints[1]->x<<","<<trianglePoints[1]->y<<","<<trianglePoints[1]->z
+    <<"\\right),\\left("
+    <<trianglePoints[2]->x<<","<<trianglePoints[2]->y<<","<<trianglePoints[2]->z
+    <<"\\right)\\right)" << std::endl;
+
+    // point of intersection
+    outputFile << "("
+    <<intersectionPoint.x<<","<<intersectionPoint.y<<","<<intersectionPoint.z
+    <<")" << std::endl;
+
+    // 4. Close the file
+    outputFile.close();
+    std::cout << "Data successfully written to output.txt" << std::endl;
+}
