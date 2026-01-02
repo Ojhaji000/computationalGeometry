@@ -1,2 +1,5 @@
 build/
+html/
 *.txt
+*.xml
+*.exe

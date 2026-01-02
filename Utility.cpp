@@ -21,7 +21,6 @@ Vec3 Utility::LinePlaneIntersection(const Line &line, const Plane &plane)
     // float tolerance = 1e-9;
     // float denominator = normalOfPlane.dot(lineDirection);
     Vec3 intersectionPoint(0,0,0);
-    float t=0;
     Vec3 planeNormal(plane.normal.x, plane.normal.y, plane.normal.z);
     Vec3 lineDir(line.direction.x, line.direction.y, line.direction.z);
     Vec3 lineOrigin(line.origin.x, line.origin.y, line.origin.z);
@@ -29,7 +28,7 @@ Vec3 Utility::LinePlaneIntersection(const Line &line, const Plane &plane)
     const float temp = planeNormal.dot(lineDir);
     if (temp > 0.001){
         const Vec3 temp1 = planePoint - lineOrigin;
-        t = planeNormal.dot(temp1);
+        float t = planeNormal.dot(temp1);
         t = t / temp;
         intersectionPoint = lineOrigin +(lineDir*t);
     }

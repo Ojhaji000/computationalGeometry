@@ -14,7 +14,7 @@ float Vec3::dot(const Vec3& b)const{
     return (x * b.x) + (y * b.y) + (z * b.z);
 }
 
-Vec3 Vec3::cross(Vec3& b){
+Vec3 Vec3::cross(const Vec3& b)const{
     Vec3 c;
     c.x = (y * b.z) - (z * b.y);
     c.y = -((x * b.z) - (z * b.x));
