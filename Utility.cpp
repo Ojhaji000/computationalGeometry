@@ -100,7 +100,7 @@ bool Utility::AreEqual(float a, float b){
 }
 
 void Utility::TextFileGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint){
-    const std::string filePath = "../data/output.txt"; 
+    const std::string filePath = "../output.txt"; 
     std::ofstream outputFile(filePath);
     if (!outputFile.is_open()) {
         std::cerr << "Error opening the file!" << std::endl;
