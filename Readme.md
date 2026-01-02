@@ -5,7 +5,13 @@
 
  ## How to run it
  - download the project
- - open terminal, make a build directory
- - cmake ..
- - cmake --build .
- - ./learncpp
+ - install [MSYS64](https://www.msys2.org/) and follow it's instructions 
+ <!-- - open terminal, make a build directory-->
+ - open project directory in terminal and run the below command
+```
+g++ main.cpp Vec3.cpp Utility.cpp -o learncpp.exe
+./learncpp.exe
+```
+---
+- a "output.txt" file will be genrated, whose content could be copy pasted in **[desmos3D](https://www.desmos.com/3d)** and viewed
+- ![output in desmos3d](image.png)
