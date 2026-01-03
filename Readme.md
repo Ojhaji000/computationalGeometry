@@ -12,6 +12,10 @@
 g++ main.cpp Vec3.cpp Utility.cpp -o learncpp.exe
 ./learncpp.exe
 ```
+- a "output.txt" file will be generated, whose content could be copy pasted in **[desmos3D](https://www.desmos.com/3d)** and viewed
+
 ---
-- a "output.txt" file will be genrated, whose content could be copy pasted in **[desmos3D](https://www.desmos.com/3d)** and viewed
+[link of the below graph](https://www.desmos.com/3d/q3j0u8wrko)
+
+---
  ![output in desmos3d](image.png)
