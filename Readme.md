@@ -6,11 +6,16 @@
  ## How to run it
  - download the project
  - install [MSYS64](https://www.msys2.org/) and follow it's instructions 
+ - install cmake
  <!-- - open terminal, make a build directory-->
  - open project directory in terminal and run the below command
 ```
-g++ main.cpp Vec3.cpp Utility.cpp -o learncpp.exe
-./learncpp.exe
+////// need lot of testing on new system
+mkdir build && cd build
+cmake ..
+cmake --build .
+./"your chosen directory name"/run and then press tab
+./1.line-triangle-intersection/run1.lineTriangleExe
 ```
 - a "output.txt" file will be generated, whose content could be copy pasted in **[desmos3D](https://www.desmos.com/3d)** and viewed
 
