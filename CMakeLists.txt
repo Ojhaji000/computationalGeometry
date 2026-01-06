@@ -1,14 +1,13 @@
-cmake_minimum_required(VERSION 3.28.0)
-project(learncpp VERSION 0.1.0 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.16)
+project(computationalGeometry LANGUAGES CXX)
 
-add_executable(learncpp main.cpp
-#Point.cpp
-Vec3.cpp
-Utility.cpp
+# Build common library
+add_library(common
+    common/Vec3.cpp
+    common/Utility.cpp
 )
+target_include_directories(common PUBLIC ${CMAKE_SOURCE_DIR}/common)
 
-# target_precompile_headers(learncpp PUBLIC
-# <vector>
-# <iostream>
-# "Vec3.h"
-# )
+# Add problems
+add_subdirectory(1.line-triangle-intersection)
+add_subdirectory(2.star-polygon)

@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
-#include "Vec3.h"
-#include "Line.h"
-#include "Plane.h"
-#include "Utility.h"
+#include "../common/Vec3.h"
+#include "../common/Line.h"
+#include "../common/Plane.h"
+#include "../common/Utility.h"
 
 int main(int, char **){
 
