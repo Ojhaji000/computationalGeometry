@@ -3,6 +3,7 @@ class Vec3{
     public:
         float x, y, z;
         Vec3();
+        Vec3(const float &X, const float &Y);
         Vec3(const float &X, const float &Y, const float &Z);
         Vec3(const Vec3 &point);
 

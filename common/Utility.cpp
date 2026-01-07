@@ -128,9 +128,33 @@ void Utility::TextFileGenerator(const Line &line, const std::vector<Vec3*> &tria
     // point of intersection
     outputFile << "("
     <<intersectionPoint.x<<","<<intersectionPoint.y<<","<<intersectionPoint.z
-    <<")" << std::endl;
+    <<")";
 
     // 4. Close the file
     outputFile.close();
     std::cout << "Data successfully written to output.txt" << std::endl;
+}
+
+void Utility::TextFileGenerator(const std::vector<Vec3*> polygonPoints, std::string fileName){
+    const std::string filePath = "../"+fileName+".txt"; 
+    std::ofstream outputFile(filePath);
+    if (!outputFile.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return; // Return an error code
+    }
+
+    // \operatorname{polygon}((0,0),(3,0),(3,4),(0,4))
+    // line
+    outputFile << "\\operatorname{polygon}\\left(";
+    for (size_t i = 0; i < polygonPoints.size();i++)
+    {
+        outputFile << "\\left(" << (*polygonPoints[i]).x << "," << (*polygonPoints[i]).y << "\\right)";
+        if(AreEqual(i+1,polygonPoints.size())){break;}
+        outputFile << ",";
+    }
+    outputFile << "\\right)";
+// \operatorname{polygon}\left(\left(1,2\right),\left(5,7\right),\left(4,9\right)\right)
+    // 4. Close the file
+    outputFile.close();
+    std::cout << "Data successfully written to "<<fileName<<".txt" << std::endl;
 }

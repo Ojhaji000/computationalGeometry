@@ -19,4 +19,16 @@ class Utility{
         static Plane PlaneOfTriangle(const std::vector<Vec3*> &trianglePoints);
         static bool PointInTriangleOrNot(const std::vector<Vec3 *> &trianglePoints, const Vec3 &point);
         static void TextFileGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint);
+        static void TextFileGenerator(const std::vector<Vec3*> polygonPoints, std::string fileName);
 };
+
+// Shoelace formula for signed area
+// double signedArea(const vector<Point>& poly) {
+//     double area = 0;
+//     int n = poly.size();
+//     for (int i = 0; i < n; i++) {
+//         int j = (i+1) % n;
+//         area += poly[i].x * poly[j].y - poly[j].x * poly[i].y;
+//     }
+//     return area / 2.0;
+// }
