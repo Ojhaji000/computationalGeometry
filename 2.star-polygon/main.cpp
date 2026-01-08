@@ -5,6 +5,36 @@ struct Point {
     double x, y;
 };
 
+// its a great way to way to find the how i am going around
+// the points od the polygon.
+// usually when we are given the polygon points, either it is in clockwise series
+// or counterclockwise. That's how we tranverse it, going either of the two
+// ways. The below function tells that direction.
+// when we are given points, namely A & B, and to form an edge, we do it by
+// forming a vector which B-A, going from A to B. Similarly C-B for the edge
+// between B and C going from B to C.
+//
+// and to check the direction of point iteration in for loop is whether
+// clockwise or counter-clockwise on the 2d plane, we could use the cross product
+//
+// in polygon all the points are collinear, and they are in 2D plane, so the cross
+// product's resulting vector either point to +ve z direction or -ve z direction
+//
+// using the right hand thumb rule the, helps us in the resulting direction orientation
+//
+// so when we go counter-clockwise, the resultant vector's direction is +ve z and
+// vice-versa
+//
+// For the cross product the common origin for the two vecctors is necessary.
+// So from any  three consecutive points in the polygon: A, B, C;
+// forming two vectors:
+// (A-B), going from B to A 
+// and 
+// (C-B), going from B to C.
+// and in cross product, we will only focus on the sign of k-cap (or z component)
+// look the image in the current directory for clarity 
+
+// double direction()
 double cross(Point a, Point b, Point c) {
     return (b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x);
 }
