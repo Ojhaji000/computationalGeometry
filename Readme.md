@@ -24,3 +24,8 @@ cmake --build .
 
 ---
  ![output in desmos3d](image.png)
+
+---
+!warning for debugging:
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make

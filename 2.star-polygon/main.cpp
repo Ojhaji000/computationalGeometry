@@ -10,8 +10,8 @@ enum PolygonPointIterationDirection
     denegerate
 };
 
-PolygonPointIterationDirection FindIterationDirection(const std::vector<Vec3>polygon){
-    Vec3 pointA = polygon[0], pointB = polygon[1], pointC = polygon[2];
+PolygonPointIterationDirection FindIterationDirection(const std::vector<Vec3 *>&polygon){
+    Vec3 pointA = *polygon[0], pointB = *polygon[1], pointC = *polygon[2];
     Vec3 vectorAB = pointB - pointA;
     Vec3 vectorCB = pointB - pointC;
     Vec3 resultantVector = vectorAB.cross(vectorCB);
@@ -81,39 +81,57 @@ bool insideHalfPlane(const Vec3 pointA, const Vec3 pointB, const Vec3 pointInQue
 //     return fabs(area) / 2.0;
 // }
 
-std::vector<Vec3> computeKernel(const std::vector<Vec3>& poly, const PolygonPointIterationDirection &iterationDir) {
-    std::vector<Vec3> kernel = { // largest bounding box(kernel), which will be clipped over and over again
-        { -1e9, -1e9 }, { 1e9, -1e9 },
-        { 1e9,  1e9 }, { -1e9,  1e9 }
-    };
+std::vector<Vec3 *> computeKernel(const std::vector<Vec3 *>& polygon, const PolygonPointIterationDirection &iterationDir) {
+    std::vector<Vec3 *> kernel = {// largest bounding box(kernel), which will be clipped over and over again
+                                  new Vec3(-1e9, -1e9), new Vec3(1e9, -1e9),
+                                  new Vec3(1e9, 1e9), new Vec3(-1e9, 1e9)};
 
-    for (int i = 0; i < poly.size(); i++) {
-        Vec3 a = poly[i];
-        Vec3 b = poly[(i+1) % poly.size()];
-        std::vector<Vec3> newKernel;
+    for (int i = 0; i < polygon.size(); i++) {
+        Vec3 polygonPointA = *polygon[i];
+        Vec3 polygonPointB = *polygon[(i+1) % polygon.size()];
+        
+        std::vector<Vec3 *> newKernel;
 
         for (int j = 0; j < kernel.size(); j++) { 
-            Vec3 curr = kernel[j];
-            Vec3 next = kernel[(j+1) % kernel.size()];
-            bool currInside = insideHalfPlane(a, b, curr, iterationDir);
-            bool nextInside = insideHalfPlane(a, b, next, iterationDir);
+            Vec3 kernelCurrentPoint = *kernel[j];
+            Vec3 kernalNextPoint = *kernel[(j+1) % kernel.size()];
 
-            if (currInside) newKernel.push_back(curr);
-            if (currInside ^ nextInside) {
+            bool isCurrentKernelPointInside = insideHalfPlane(
+                polygonPointA, polygonPointB, kernelCurrentPoint, iterationDir
+            );
+            bool isNextKernelPointInside = insideHalfPlane(
+                polygonPointA, polygonPointB, kernalNextPoint, iterationDir
+            );
+
+            if (isCurrentKernelPointInside) newKernel.push_back(&kernelCurrentPoint);
+
+            if (isCurrentKernelPointInside ^ isNextKernelPointInside) { // XOR operation
                 // intersection point
-                double A1 = b.y - a.y;
-                double B1 = a.x - b.x;
-                double C1 = A1*a.x + B1*a.y;
+                // forming two lines, each from polygon and kernel points respectively
+                // for representation, using standard form for line eqaution: Ax + By + C = 0
+                // and using two point form for finding the value of A,B,C
+                // (y - y1) / (y2 - y1) = (x - x1) / (x2 - x1)
+                // so A = (y2 - y1);
+                // B = -(x2 - x1) = (x1 - x2);
+                // C = (y2 - y1) * x1 - (x2 - x1) * y1 
+                //   = (y2 - y1) * x1 + (x1 - x2) * y1
+                //   = A * x1 + B * y1;
+                float A1 = polygonPointB.y - polygonPointA.y;
+                float B1 = polygonPointA.x - polygonPointB.x;
+                float C1 = A1*polygonPointA.x + B1*polygonPointA.y;
 
-                double A2 = next.y - curr.y;
-                double B2 = curr.x - next.x;
-                double C2 = A2*curr.x + B2*curr.y;
+                float A2 = kernalNextPoint.y - kernelCurrentPoint.y;
+                float B2 = kernelCurrentPoint.x - kernalNextPoint.x;
+                float C2 = A2*kernelCurrentPoint.x + B2*kernelCurrentPoint.y;
 
-                double det = A1*B2 - A2*B1;
-                if (fabs(det) > 1e-9) {
-                    float x = (float)(B2*C1 - B1*C2) / det;
-                    float y = (float)(A1*C2 - A2*C1) / det;
-                    newKernel.push_back({x,y,0});
+                // cramer rule
+                // https://en.wikipedia.org/wiki/Cramer%27s_rule#Applications
+
+                float determinant = A1*B2 - A2*B1;
+                if (fabs(determinant) > 1e-9) {
+                    float x = (B2*C1 - B1*C2) / determinant;
+                    float y = (A1*C2 - A2*C1) / determinant;
+                    newKernel.push_back(new Vec3(x,y));
                 }
             }
         }
@@ -124,35 +142,54 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& poly, const PolygonPoin
 }
 
 int main() {
-    std::vector<Vec3 *> polygon = {
-        new Vec3(0,0),
-        new Vec3(6,0), 
-        new Vec3(6,2), 
-        new Vec3(1,2),
-        new Vec3(4,5),
-        new Vec3(3,3),
-        new Vec3(6,3),
-        new Vec3(4,6),
-        new Vec3(0,6)
-    };
-    // if(polygon.size()<3){
-    //     std::cout << "not a polygon" << std::endl;
-    //     return 0;
-    // }
-    // PolygonPointIterationDirection iterationDir = FindIterationDirection(polygon);
-    // if(iterationDir == denegerate) return 1;
-    // std::vector<Vec3> kernel = computeKernel(polygon, iterationDir);
+    // std::vector<Vec3 *> polygon = {
+    //     new Vec3(0,0),
+    //     new Vec3(6,0), 
+    //     new Vec3(6,2), 
+    //     new Vec3(1,2),
+    //     new Vec3(4,5),
+    //     new Vec3(3,3),
+    //     new Vec3(6,3),
+    //     new Vec3(4,6),
+    //     new Vec3(0,6)
+    // };
+    std::vector<Vec3*> polygon = {
+    // new Vec3(0, 3),   // top point
+    // new Vec3(1, 1),   // right upper
+    // new Vec3(3, 1),   // right lower
+    // new Vec3(1.5, -1),// bottom right
+    // new Vec3(2.5, -3),// bottom tip
+    // new Vec3(0, -2),  // bottom center
+    // new Vec3(-2.5, -3),// bottom left tip
+    // new Vec3(-1.5, -1),// bottom left
+    // new Vec3(-3, 1),   // left lower
+    // new Vec3(-1, 1)    // left upper
+    new Vec3(0,0), new Vec3(4,4), new Vec3(2,4)
+};
 
-    // if (kernel.empty()) {
-    //     std::cout << "Polygon is NOT star-shaped." << std::endl;
-    // } else {
-    //     std::cout << "Polygon is star-shaped. Kernel coordinates:" <<std:: endl;
-    //     for (auto &p : kernel) {
-    //         std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
-    //     }
-    // }
-    std::cout << "asdfghjkjhgfdsasdfg" << std::endl;
+    if(polygon.size()<3){
+        std::cout << "not a polygon" << std::endl;
+        return 0;
+    }
+    PolygonPointIterationDirection iterationDir = FindIterationDirection(polygon);
+    if(iterationDir == denegerate){
+        std::cout << "points of polygon are collinear" <<std::endl;
+        return 1;
+    }
+    std::vector<Vec3 *> kernel = computeKernel(polygon, iterationDir);
+
+    if (kernel.empty()) {
+        std::cout << "Polygon is NOT star-shaped." << std::endl;
+    } else {
+        std::cout << "Polygon is star-shaped. Kernel coordinates:" <<std:: endl;
+        for (auto p : kernel) {
+            std::cout << "(" << (*p).x << ", " << (*p).y << ")" << std::endl;
+        }
+    }
+    
+    
     TextFile outputFile;
     outputFile.Add2DPolygon(polygon);
-    outputFile.GeneratorFile("poly");
+    outputFile.Add2DPolygon(kernel);
+    outputFile.GeneratorFile("starShapedPloygon");
 }
