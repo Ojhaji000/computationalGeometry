@@ -44,3 +44,6 @@ The code is like playing hide‑and‑seek:
 ---
 
 Would you like me to draw a **simple cartoon diagram** (like a playground with fences and the “safe spot”) so you can *see* what the code is doing?
+
+
+[AREA OF A POLYGON](https://en.wikipedia.org/wiki/Shoelace_formula)

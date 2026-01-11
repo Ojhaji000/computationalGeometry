@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "../common/Vec3.h"
-#include "../common/Line.h"
-#include "../common/Plane.h"
-#include "../common/Utility.h"
+#include "Vec3.h"
+#include "Line.h"
+#include "Plane.h"
+#include "Utility.h"
+#include "TextFile.h"
 
 int main(int, char **){
 
@@ -25,5 +26,10 @@ int main(int, char **){
     bool result = Utility::PointInTriangleOrNot(trianglePoints, intersectionPoint);
     std::cout << "and the line crosses the triangle or not:" << result << std::endl;
 
-    Utility::TextFileGenerator(line, trianglePoints, intersectionPoint);
+    TextFile outputFile;
+    outputFile.Add3DPoint(intersectionPoint);
+    outputFile.Add3DLine(line);
+    outputFile.Add3DTriangle(trianglePoints);
+    outputFile.GeneratorFile("LineTriangleIntersection");
+    // Utility::TextFileGenerator(line, trianglePoints, intersectionPoint);
 };

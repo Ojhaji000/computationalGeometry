@@ -1,6 +1,7 @@
 #include <vector>
-#include "../common/Vec3.h"
-#include "../common/Utility.h"
+#include "Vec3.h"
+#include "Utility.h"
+#include "TextFile.h"
 
 enum PolygonPointIterationDirection
 {
@@ -67,6 +68,7 @@ bool insideHalfPlane(const Vec3 pointA, const Vec3 pointB, const Vec3 pointInQue
             return coefficientOfZcomponentOfCrossProductresultant >= 0;
             break;
     }
+    return false;
 }
 
 // double polygonArea(const vector<Vec3>& poly) {
@@ -122,26 +124,35 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& poly, const PolygonPoin
 }
 
 int main() {
-    std::vector<Vec3> polygon = {
-        {0,0}, {6,0}, {6,2}, {1,2}, {4,5},{3,3},{6,3},{4,6},{0,6}
+    std::vector<Vec3 *> polygon = {
+        new Vec3(0,0),
+        new Vec3(6,0), 
+        new Vec3(6,2), 
+        new Vec3(1,2),
+        new Vec3(4,5),
+        new Vec3(3,3),
+        new Vec3(6,3),
+        new Vec3(4,6),
+        new Vec3(0,6)
     };
-    if(polygon.size()<3){
-        std::cout << "not a polygon" << std::endl;
-        return 0;
-    }
-    PolygonPointIterationDirection iterationDir = FindIterationDirection(polygon);
-    if(iterationDir == denegerate)
-        return;
-    std::vector<Vec3> kernel = computeKernel(polygon, iterationDir);
+    // if(polygon.size()<3){
+    //     std::cout << "not a polygon" << std::endl;
+    //     return 0;
+    // }
+    // PolygonPointIterationDirection iterationDir = FindIterationDirection(polygon);
+    // if(iterationDir == denegerate) return 1;
+    // std::vector<Vec3> kernel = computeKernel(polygon, iterationDir);
 
-    if (kernel.empty()) {
-        std::cout << "Polygon is NOT star-shaped." << std::endl;
-    } else {
-        std::cout << "Polygon is star-shaped. Kernel coordinates:" <<std:: endl;
-        for (auto &p : kernel) {
-            std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
-        }
-        // cout << "Kernel area = " << polygonArea(kernel) << endl;
-    }
-    Utility::TextFileGenerator(kernel, polygon)
+    // if (kernel.empty()) {
+    //     std::cout << "Polygon is NOT star-shaped." << std::endl;
+    // } else {
+    //     std::cout << "Polygon is star-shaped. Kernel coordinates:" <<std:: endl;
+    //     for (auto &p : kernel) {
+    //         std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
+    //     }
+    // }
+    std::cout << "asdfghjkjhgfdsasdfg" << std::endl;
+    TextFile outputFile;
+    outputFile.Add2DPolygon(polygon);
+    outputFile.GeneratorFile("poly");
 }
