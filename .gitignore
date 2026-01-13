@@ -3,3 +3,5 @@ html/
 *.txt
 *.xml
 *.exe
+
+!CMakeLists.txt
