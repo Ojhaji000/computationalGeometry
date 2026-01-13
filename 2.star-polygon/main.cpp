@@ -11,28 +11,29 @@ enum PolygonPointIterationDirection
 };
 
 PolygonPointIterationDirection FindIterationDirection(const std::vector<Vec3>&polygon){
+    // this function uses the shoelace formula for finding the area
+    // https://en.wikipedia.org/wiki/Shoelace_formula
     double area = 0.0;
     int n = polygon.size();
+    
     for (int i = 0; i < n; i++)
     {
         int j = (i + 1) % n;
         area += (polygon[i].x * polygon[j].y - polygon[j].x * polygon[i].y);
     }
+
     area /= 2.0;
-    // Vec3 pointA = polygon[0], pointB = polygon[1], pointC = polygon[2];
-    // Vec3 vectorAB = pointB - pointA;
-    // Vec3 vectorCB = pointB - pointC;
-    // Vec3 resultantVector = vectorAB.cross(vectorCB);
-    if(area>0){//(resultantVector.z<0){
+
+    if(area>0){
         return counterClockWise;
-    }else if(area<0){//resultantVector.z>0){
+    }
+    else if (area < 0)
+    {
         return clockWise;
-    }else{
-        std::cout << "the polygon is degenerate(collinear), because points"//: "
-                //   << "(" << pointA.x << "," << pointB.y << "), "
-                //   << "(" << pointB.x << "," << pointB.y << "), "
-                //   << "(" << pointC.x << "," << pointC.y << ") "
-                  << "are collinear" << std::endl;
+    }
+    else
+    {
+        std::cout << "the polygon is degenerate(collinear), because points are collinear" << std::endl;
         return denegerate;
     }
 }
@@ -66,13 +67,14 @@ bool insideHalfPlane(const Vec3 pointA, const Vec3 pointB, const Vec3 pointInQue
     // and in cross product, we will only focus on the sign of k-cap (or z component)
     // look the image in the current directory for clarity
     Vec3 pointC = pointInQuestion;
-    Vec3 vectorAB = pointB - pointA; // point
+    Vec3 vectorAB = pointB - pointA;
     Vec3 vectorCB = pointB - pointC;
     Vec3 resultantVector = vectorAB.cross(vectorCB);
 
     double coefficientOfZcomponentOfCrossProductresultant = resultantVector.z;
-    if(Utility::AreEqual(coefficientOfZcomponentOfCrossProductresultant, 0))
+    if(Utility::AreEqual(coefficientOfZcomponentOfCrossProductresultant, 0)){
         return false;
+    }
         
     switch (iterationDir)
     {
@@ -89,6 +91,7 @@ bool insideHalfPlane(const Vec3 pointA, const Vec3 pointB, const Vec3 pointInQue
 std::vector<Vec3> computeKernel(const std::vector<Vec3>& polygon, const PolygonPointIterationDirection &iterationDir) {
 
     // largest bounding box(kernel), which will be clipped over and over again
+
     std::vector<Vec3> kernel = {
         *(new Vec3(-1e7, -1e7)),
         *(new Vec3(1e7, -1e7)),
@@ -124,11 +127,12 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& polygon, const PolygonP
                 newKernel.push_back(intersectionPoint);
             }
         }
-        std::string pointStr;
-        for(auto p : newKernel)
-        {
-            pointStr += "(" + std::to_string(p.x) + "," + std::to_string(p.y) + "),";
-        }
+        // for debugging purpose
+        // std::string pointStr;
+        // for(auto p : newKernel)
+        // {
+        //     pointStr += "(" + std::to_string(p.x) + "," + std::to_string(p.y) + "),";
+        // }
         kernel = newKernel;
         if (kernel.empty()) break;
     }
@@ -137,90 +141,95 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& polygon, const PolygonP
 
 int main() {
     std::vector<Vec3> polygon = {
-        *(new Vec3(0,0)),
-        *(new Vec3(6,0)),
-        *(new Vec3(6,2)),
-        *(new Vec3(1,2)),
-        *(new Vec3(4,5)),
-        *(new Vec3(3,3)),
-        *(new Vec3(6,3)),
-        *(new Vec3(4,6)),
-        *(new Vec3(0,6))
+        // polygon 1 for testing
+        // *(new Vec3(0,0)),
+        // *(new Vec3(6,0)),
+        // *(new Vec3(6,2)),
+        // *(new Vec3(1,2)),
+        // *(new Vec3(4,5)),
+        // *(new Vec3(3,3)),
+        // *(new Vec3(6,3)),
+        // *(new Vec3(4,6)),
+        // *(new Vec3(0,6))
 
-        // *(new Vec3(0, 3)   ),// top point
-        // *(new Vec3(1, 1)   ),// right upper
-        // *(new Vec3(3, 1)   ),// right lower
-        // *(new Vec3(1.5, -1)),// bottom right
-        // *(new Vec3(2.5, -3)),// bottom tip
-        // *(new Vec3(0, -2) ),// bottom center
-        // *(new Vec3(-2.5, -3)),// bottom left tip
-        // *(new Vec3(-1.5, -1)),// bottom left
-        // *(new Vec3(-3, 1)), // left lower
-        // *(new Vec3(-1, 1)   ) // left upper
+        // polygon 2 for testing
+        *(new Vec3(0, 3)),     // top point
+        *(new Vec3(1, 1)),     // right upper
+        *(new Vec3(3, 1)),     // right lower
+        *(new Vec3(1.5, -1)),  // bottom right
+        *(new Vec3(2.5, -3)),  // bottom tip
+        *(new Vec3(0, -2)),    // bottom center
+        *(new Vec3(-2.5, -3)), // bottom left tip
+        *(new Vec3(-1.5, -1)), // bottom left
+        *(new Vec3(-3, 1)),    // left lower
+        *(new Vec3(-1, 1))     // left upper
 
-// *(new Vec3(0, 3)),
-// *(new Vec3(2, 3)),
-// *(new Vec3(3, 0)),
-// *(new Vec3(4, 3)),
-// // *(new Vec3(6, 3)),
-// // *(new Vec3(4.5, 5)),
-// // *(new Vec3(5.5, 8)),
-// *(new Vec3(3, 6)),
-// // *(new Vec3(0.5, 8)),
-// *(new Vec3(1.5, 5))
+        // polygon 3 for testing
+        // *(new Vec3(0, 3)),
+        // *(new Vec3(2, 3)),
+        // *(new Vec3(3, 0)),
+        // *(new Vec3(4, 3)),
+        // *(new Vec3(3, 6)),
+        // *(new Vec3(1.5, 5))
 
+        // polygon 4 for testing
+        // *(new Vec3(0, 0)),
+        // *(new Vec3(4, 0)),
+        // *(new Vec3(4, 4)),
+        // *(new Vec3(2, 2)), // inward dent → makes it concave
+        // *(new Vec3(0, 4))
 
-// *(new Vec3(0, 0)),
-// *(new Vec3(4, 0)),
-// *(new Vec3(4, 4)),
-// *(new Vec3(2, 2)), // inward dent → makes it concave
-// *(new Vec3(0, 4))
+        // polygon 5 for testing
+        // *(new Vec3(0, 0)),
+        // *(new Vec3(2.828, 2.828)),
+        // *(new Vec3(0, 5.657)),
+        // *(new Vec3(0, 2.828)), // inward dent → concave
+        // *(new Vec3(-2.828, 2.828))
 
-// *(new Vec3(0, 0)),
-// *(new Vec3(2.828, 2.828)),
-// *(new Vec3(0, 5.657)),
-// *(new Vec3(0, 2.828)), // inward dent → concave
-// *(new Vec3(-2.828, 2.828))
+        // polygon 6 for testing
+        // *(new Vec3(0, 0)),
+        // *(new Vec3(2.828, 2.828)),
+        // *(new Vec3(0, 5.657)),
+        // *(new Vec3(-1.414, 4.242)), // new inward dent
+        // *(new Vec3(0, 2.828)),      // original inward dent
+        // *(new Vec3(-2.828, 2.828))
 
-// *(new Vec3(0, 0)),
-// *(new Vec3(2.828, 2.828)),
-// *(new Vec3(0, 5.657)),
-// *(new Vec3(-1.414, 4.242)), // new inward dent
-// *(new Vec3(0, 2.828)),      // original inward dent
-// *(new Vec3(-2.828, 2.828))
+        // polygon 7 for testing
+        // *(new Vec3(0, 0)),
+        // *(new Vec3(2.828, 2.828)),
+        // *(new Vec3(0, 5.657)),
+        // *(new Vec3(0, 2.828)),    // dent #1
+        // *(new Vec3(-2.828, 5.657)), // dent #2
+        // *(new Vec3(-2.828, 2.828))
 
-// *(new Vec3(0, 0)),
-// *(new Vec3(2.828, 2.828)),
-// *(new Vec3(0, 5.657)),
-// *(new Vec3(0, 2.828)),    // dent #1
-// *(new Vec3(-2.828, 5.657)), // dent #2
-// *(new Vec3(-2.828, 2.828))
+        // polygon 8 for testing
+        // *(new Vec3(0, 0)),
+        // *(new Vec3(2.828, 2.828)),
+        // *(new Vec3(0, 5.657)),
+        // *(new Vec3(0, 2.828)),      // inward dent #1
+        // *(new Vec3(-0.707, 7.778)), // outward bump
+        // *(new Vec3(-2.828, 5.657)), // inward dent #2
+        // *(new Vec3(-2.828, 2.828))
 
-// *(new Vec3(0, 0)),
-// *(new Vec3(2.828, 2.828)),
-// *(new Vec3(0, 5.657)),
-// *(new Vec3(0, 2.828)),      // inward dent #1
-// *(new Vec3(-0.707, 7.778)), // outward bump
-// *(new Vec3(-2.828, 5.657)), // inward dent #2
-// *(new Vec3(-2.828, 2.828))
+        // polygon 9 for testing
+        // *(new Vec3(0, 3)),
+        // *(new Vec3(2, 3)),
+        // *(new Vec3(3, 0)),
+        // *(new Vec3(4, 3)),
+        // *(new Vec3(6, 3)),
+        // *(new Vec3(4.5, 5)),
+        // *(new Vec3(5.5, 8)),
+        // *(new Vec3(3, 6)),
+        // *(new Vec3(0.5, 8)),
+        // *(new Vec3(1.5, 5))
 
-// *(new Vec3(0, 3)),
-// *(new Vec3(2, 3)),
-// *(new Vec3(3, 0)),
-// *(new Vec3(4, 3)),
-// *(new Vec3(6, 3)),
-// *(new Vec3(4.5, 5)),
-// *(new Vec3(5.5, 8)),
-// *(new Vec3(3, 6)),
-// *(new Vec3(0.5, 8)),
-// *(new Vec3(1.5, 5))
-
-// *(new Vec3(0, 0)),      // bottom-left
-// *(new Vec3(2, 1)),      // bottom dent inward
-// *(new Vec3(4, 0)),      // bottom-right
-// *(new Vec3(4, 4)),      // top-right
-// *(new Vec3(2, 3)),      // top dent inward
-// *(new Vec3(0, 4))       // top-left
+        // polygon 10 for testing
+        // *(new Vec3(0, 0)),      // bottom-left
+        // *(new Vec3(2, 1)),      // bottom dent inward
+        // *(new Vec3(4, 0)),      // bottom-right
+        // *(new Vec3(4, 4)),      // top-right
+        // *(new Vec3(2, 3)),      // top dent inward
+        // *(new Vec3(0, 4))       // top-left
 
     };
 
@@ -228,30 +237,27 @@ int main() {
         std::cout << "not a polygon" << std::endl;
         return 0;
     }
+
     PolygonPointIterationDirection iterationDir = FindIterationDirection(polygon);
+
     if(iterationDir == denegerate){
         std::cout << "points of polygon are collinear" <<std::endl;
         return 1;
     }
+
     std::vector<Vec3> kernel = computeKernel(polygon, iterationDir);
 
     if (kernel.empty()) {
         std::cout << "Polygon is NOT star-shaped." << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "Polygon is star-shaped. Kernel coordinates:" <<std:: endl;
         for (auto p : kernel) {
             std::cout << "(" << (p).x << ", " << (p).y << ")" << std::endl;
         }
     }
-    // std::vector<Vec3> polygonEdge = {*(new Vec3(4,4)), *(new Vec3(0,0))};
-    // std::vector<Vec3> kernalEdge = {*(new Vec3(1e9, 1e9)), *(new Vec3(6,3))};
 
-    // Vec3 intersectionPoint = Utility::LineLineIntersectionPoint2D(polygonEdge, kernalEdge);
-    // std::cout << "intersection point:(" << intersectionPoint.x << "," << intersectionPoint.y << ")" << std::endl;
-    // double x = 1e9, y = 5;
-    // double res1 = (pow(x, 2) - pow(y, 2)) / (x + y);
-    // double res2 = x - y;
-    // std::cout << "res1:" << std::to_string(res1) << " and res2:" << std::to_string(res2) << std::endl;
     TextFile outputFile;
     outputFile.Add2DPolygon(polygon);
     outputFile.Add2DPolygon(kernel);
