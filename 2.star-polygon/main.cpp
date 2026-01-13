@@ -11,16 +11,28 @@ enum PolygonPointIterationDirection
 };
 
 PolygonPointIterationDirection FindIterationDirection(const std::vector<Vec3>&polygon){
-    Vec3 pointA = polygon[0], pointB = polygon[1], pointC = polygon[2];
-    Vec3 vectorAB = pointB - pointA;
-    Vec3 vectorCB = pointB - pointC;
-    Vec3 resultantVector = vectorAB.cross(vectorCB);
-    if(resultantVector.z<0){
+    double area = 0.0;
+    int n = polygon.size();
+    for (int i = 0; i < n; i++)
+    {
+        int j = (i + 1) % n;
+        area += (polygon[i].x * polygon[j].y - polygon[j].x * polygon[i].y);
+    }
+    area /= 2.0;
+    // Vec3 pointA = polygon[0], pointB = polygon[1], pointC = polygon[2];
+    // Vec3 vectorAB = pointB - pointA;
+    // Vec3 vectorCB = pointB - pointC;
+    // Vec3 resultantVector = vectorAB.cross(vectorCB);
+    if(area>0){//(resultantVector.z<0){
         return counterClockWise;
-    }else if(resultantVector.z>0){
+    }else if(area<0){//resultantVector.z>0){
         return clockWise;
     }else{
-        std::cout << "the polygon is degenerate(collinear)" << std::endl;
+        std::cout << "the polygon is degenerate(collinear), because points"//: "
+                //   << "(" << pointA.x << "," << pointB.y << "), "
+                //   << "(" << pointB.x << "," << pointB.y << "), "
+                //   << "(" << pointC.x << "," << pointC.y << ") "
+                  << "are collinear" << std::endl;
         return denegerate;
     }
 }
@@ -112,6 +124,11 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& polygon, const PolygonP
                 newKernel.push_back(intersectionPoint);
             }
         }
+        std::string pointStr;
+        for(auto p : newKernel)
+        {
+            pointStr += "(" + std::to_string(p.x) + "," + std::to_string(p.y) + "),";
+        }
         kernel = newKernel;
         if (kernel.empty()) break;
     }
@@ -120,15 +137,15 @@ std::vector<Vec3> computeKernel(const std::vector<Vec3>& polygon, const PolygonP
 
 int main() {
     std::vector<Vec3> polygon = {
-        // *(new Vec3(0,0)),
-        // *(new Vec3(6,0)),
-        // *(new Vec3(6,2)),
-        // *(new Vec3(1,2)),
-        // *(new Vec3(4,5)),
-        // *(new Vec3(3,3)),
-        // *(new Vec3(6,3)),
-        // *(new Vec3(4,6)),
-        // *(new Vec3(0,6))
+        *(new Vec3(0,0)),
+        *(new Vec3(6,0)),
+        *(new Vec3(6,2)),
+        *(new Vec3(1,2)),
+        *(new Vec3(4,5)),
+        *(new Vec3(3,3)),
+        *(new Vec3(6,3)),
+        *(new Vec3(4,6)),
+        *(new Vec3(0,6))
 
         // *(new Vec3(0, 3)   ),// top point
         // *(new Vec3(1, 1)   ),// right upper
@@ -153,12 +170,57 @@ int main() {
 // *(new Vec3(1.5, 5))
 
 
-*(new Vec3(0, 0)),
-*(new Vec3(4, 0)),
-*(new Vec3(4, 4)),
-*(new Vec3(2, 2)), // inward dent → makes it concave
-*(new Vec3(0, 4))
+// *(new Vec3(0, 0)),
+// *(new Vec3(4, 0)),
+// *(new Vec3(4, 4)),
+// *(new Vec3(2, 2)), // inward dent → makes it concave
+// *(new Vec3(0, 4))
 
+// *(new Vec3(0, 0)),
+// *(new Vec3(2.828, 2.828)),
+// *(new Vec3(0, 5.657)),
+// *(new Vec3(0, 2.828)), // inward dent → concave
+// *(new Vec3(-2.828, 2.828))
+
+// *(new Vec3(0, 0)),
+// *(new Vec3(2.828, 2.828)),
+// *(new Vec3(0, 5.657)),
+// *(new Vec3(-1.414, 4.242)), // new inward dent
+// *(new Vec3(0, 2.828)),      // original inward dent
+// *(new Vec3(-2.828, 2.828))
+
+// *(new Vec3(0, 0)),
+// *(new Vec3(2.828, 2.828)),
+// *(new Vec3(0, 5.657)),
+// *(new Vec3(0, 2.828)),    // dent #1
+// *(new Vec3(-2.828, 5.657)), // dent #2
+// *(new Vec3(-2.828, 2.828))
+
+// *(new Vec3(0, 0)),
+// *(new Vec3(2.828, 2.828)),
+// *(new Vec3(0, 5.657)),
+// *(new Vec3(0, 2.828)),      // inward dent #1
+// *(new Vec3(-0.707, 7.778)), // outward bump
+// *(new Vec3(-2.828, 5.657)), // inward dent #2
+// *(new Vec3(-2.828, 2.828))
+
+// *(new Vec3(0, 3)),
+// *(new Vec3(2, 3)),
+// *(new Vec3(3, 0)),
+// *(new Vec3(4, 3)),
+// *(new Vec3(6, 3)),
+// *(new Vec3(4.5, 5)),
+// *(new Vec3(5.5, 8)),
+// *(new Vec3(3, 6)),
+// *(new Vec3(0.5, 8)),
+// *(new Vec3(1.5, 5))
+
+// *(new Vec3(0, 0)),      // bottom-left
+// *(new Vec3(2, 1)),      // bottom dent inward
+// *(new Vec3(4, 0)),      // bottom-right
+// *(new Vec3(4, 4)),      // top-right
+// *(new Vec3(2, 3)),      // top dent inward
+// *(new Vec3(0, 4))       // top-left
 
     };
 
