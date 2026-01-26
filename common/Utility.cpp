@@ -98,59 +98,6 @@ bool Utility::AreEqual(float a, float b){
     return std::abs(a - b) < Epsilon;
 }
 
-// void Utility::TextFileGenerator(const Line &line, const std::vector<Vec3*> &trianglePoints, const Vec3 &intersectionPoint){
-//     const std::string filePath = "../output.txt"; 
-//     std::ofstream outputFile(filePath);
-//     if (!outputFile.is_open()) {
-//         std::cerr << "Error opening the file!" << std::endl;
-//         return; // Return an error code
-//     }
-//     // line
-//     outputFile << "\\ \\left("
-//     <<line.origin.x<<","<< line.origin.y<<","<<line.origin.z
-//     <<"\\right)+t\\left("<<
-//     line.direction.x<<","<<line.direction.y<<","<<line.direction.z
-//     <<"\\right)"<<std::endl;
-//     // plane
-//     // outputFile << "4\\left(x-2\\right)+2\\left(y-5\\right)+8\\left(z-8\\right)=0" << std::endl;
-//     // triangle
-//     outputFile << "\\operatorname{triangle}\\left(\\left("
-//     <<trianglePoints[0]->x<<","<<trianglePoints[0]->y<<","<<trianglePoints[0]->z
-//     <<"\\right),\\left("
-//     <<trianglePoints[1]->x<<","<<trianglePoints[1]->y<<","<<trianglePoints[1]->z
-//     <<"\\right),\\left("
-//     <<trianglePoints[2]->x<<","<<trianglePoints[2]->y<<","<<trianglePoints[2]->z
-//     <<"\\right)\\right)" << std::endl;
-//     // point of intersection
-//     outputFile << "("
-//     <<intersectionPoint.x<<","<<intersectionPoint.y<<","<<intersectionPoint.z
-//     <<")";
-//     // 4. Close the file
-//     outputFile.close();
-//     std::cout << "Data successfully written to output.txt" << std::endl;
-// }
-// void Utility::TextFileGenerator(const std::vector<Vec3*> polygonPoints, std::string fileName){
-//     const std::string filePath = "../"+fileName+".txt"; 
-//     std::ofstream outputFile(filePath);
-//     if (!outputFile.is_open()) {
-//         std::cerr << "Error opening the file!" << std::endl;
-//         return; // Return an error code
-//     }
-//     // \operatorname{polygon}((0,0),(3,0),(3,4),(0,4))
-//     // line
-//     outputFile << "\\operatorname{polygon}\\left(";
-//     for (size_t i = 0; i < polygonPoints.size();i++)
-//     {
-//         outputFile << "\\left(" << (*polygonPoints[i]).x << "," << (*polygonPoints[i]).y << "\\right)";
-//         if(AreEqual(i+1,polygonPoints.size())){break;}
-//         outputFile << ",";
-//     }
-//     outputFile << "\\right)";
-// // \operatorname{polygon}\left(\left(1,2\right),\left(5,7\right),\left(4,9\right)\right)
-//     // 4. Close the file
-//     outputFile.close();
-//     std::cout << "Data successfully written to "<<fileName<<".txt" << std::endl;
-// }
 
 Vec3 Utility::LineLineIntersectionPoint2D(const std::vector<Vec3> line2DFirst, const std::vector<Vec3> line2DSecond){
     // intersection point
